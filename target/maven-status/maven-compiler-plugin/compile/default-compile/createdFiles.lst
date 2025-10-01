@@ -1,0 +1,5 @@
+inventorymanage\InventoryItem.class
+inventorymanage\InventoryApp.class
+inventorymanage\DatabaseManager.class
+ui\InventoryController.class
+ui\MainApp.class

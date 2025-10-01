@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="ui.InventoryController">
+
+    <top>
+        <HBox alignment="CENTER" spacing="10">
+            <Button fx:id="refreshBtn" onAction="#onRefresh" text="Refresh" />
+            <Button fx:id="addBtn" text="Add" />
+            <Button fx:id="editBtn" text="Edit" />
+            <Button fx:id="deleteBtn" text="Delete" />
+        </HBox>
+    </top>
+
+    <center>
+        <TableView fx:id="tableView">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" />
+                <TableColumn fx:id="nameColumn" text="Name" />
+                <TableColumn fx:id="quantityColumn" text="Quantity" />
+                <TableColumn fx:id="priceColumn" text="Price" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>
