@@ -1,0 +1,87 @@
+# Maven build
+target/
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Eclipse / IDE metadata
+.classpath
+.project
+.settings/
+.metadata/
+
+# IntelliJ / VSCode
+.idea/
+*.iml
+.vscode/
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Batch or shell scripts 
+*.bat
+*.sh
+
+# Scene Builder backups
+*.fxml~
+*.backup
+
+# Database configs or secrets
+*.db
+*.sql
+*.env
+
+# Maven build
+target/
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Eclipse / IDE metadata
+.classpath
+.project
+.settings/
+.metadata/
+
+# IntelliJ / VSCode
+.idea/
+*.iml
+.vscode/
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Batch or shell scripts 
+*.bat
+*.sh
+
+# Scene Builder backups
+*.fxml~
+*.backup
+
+# Database configs or secrets
+*.db
+*.sql
+*.env
+
+# Local Maven repository 
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar

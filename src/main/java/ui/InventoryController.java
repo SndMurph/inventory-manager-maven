@@ -1,16 +1,24 @@
 package ui;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import inventorymanage.DatabaseManager;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
 import inventorymanage.InventoryItem;
-import java.sql.*;
-import java.util.ArrayList;
+import inventorymanage.DatabaseManager;
+import dao.InventoryDao;
+import dao.JdbcInventoryDao;
+
 public class InventoryController {
 
     @FXML private Button refreshBtn;
@@ -25,12 +33,14 @@ public class InventoryController {
     @FXML private TableColumn<InventoryItem, Double> priceColumn;
 
     private final DatabaseManager db = new DatabaseManager();
+    private InventoryDao dao;
     
     @FXML
     private void initialize() {
 
-        try {
+        try {		
             db.connect();
+            dao = new JdbcInventoryDao(db);
         } catch (SQLException e) {
             e.printStackTrace(); 
         }
@@ -44,18 +54,92 @@ public class InventoryController {
                 + (tableView != null));
     }
     
+    private Optional<inventorymanage.InventoryItem> showItemDialog(InventoryItem toEdit) {
+        try {
+            var loader = new FXMLLoader(getClass().getResource("/ui/item_form.fxml"));
+            DialogPane pane = loader.load();
+            ItemFormController controller = loader.getController();
+            controller.setItem(toEdit);
+
+            Dialog<InventoryItem> dialog = new Dialog<>();
+            dialog.setTitle(toEdit == null ? "Add Item" : "Edit Item");
+            dialog.setDialogPane(pane);
+
+            
+          
+            dialog.setResultConverter(bt -> {
+                boolean isSave = bt != null && bt.getButtonData().isDefaultButton();
+                return controller.getResult(isSave).orElse(null);
+            });
+
+            return dialog.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    
+    @FXML
+    private void onAdd() {
+        showItemDialog(null).ifPresent(item -> {
+            try {
+                dao.insert(item);
+                onRefresh();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @FXML
+    private void onEdit() {
+        InventoryItem selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        showItemDialog(selected).ifPresent(updated -> {
+            try {
+                dao.update(updated);
+                onRefresh();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
     @FXML
     private void onRefresh() {
         try {
-            ArrayList<InventoryItem> items = db.getAllItems();    
+            List<InventoryItem> items = dao.findAll();    
             ObservableList<InventoryItem> data = FXCollections.observableArrayList(items);
             tableView.setItems(data);
             System.out.println("[FX] Refresh clicked!");
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace(); 
         }
     }
 
+    @FXML
+    private void onDelete(javafx.event.ActionEvent e) {
+        var selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        var alert = new javafx.scene.control.Alert(
+            javafx.scene.control.Alert.AlertType.CONFIRMATION,
+            "Delete " + selected.getName() + "?",
+            javafx.scene.control.ButtonType.OK,
+            javafx.scene.control.ButtonType.CANCEL
+        );
+        alert.showAndWait().ifPresent(bt -> {
+            if (bt == javafx.scene.control.ButtonType.OK) {
+                try {
+                    dao.deleteById(selected.getId());
+                    onRefresh(); // reload table
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
     
     public void shutdown() {
         try { db.disconnect(); } catch (SQLException ignored) {}

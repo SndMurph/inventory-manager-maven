@@ -1,5 +1,8 @@
 inventorymanage\InventoryItem.class
-inventorymanage\InventoryApp.class
 inventorymanage\DatabaseManager.class
 ui\InventoryController.class
+ui\ItemFormController.class
+dao\JdbcInventoryDao.class
+inventorymanage\InventoryApp.class
 ui\MainApp.class
+dao\InventoryDao.class

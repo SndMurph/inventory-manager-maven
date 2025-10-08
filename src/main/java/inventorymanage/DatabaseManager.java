@@ -9,7 +9,7 @@ public class DatabaseManager {
 	public void connect() throws SQLException {
 		String url = "jdbc:mysql://localhost:3306/inventory_db";
 		String user = "root";
-		String password = "root"; // replace with your password
+		String password = "Your_password_here"; // replace with your password
 		conn = DriverManager.getConnection(url, user, password);
 	}
 	
